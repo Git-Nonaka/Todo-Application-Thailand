@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" type="text/css" href="./css/register.css" />
+        <title>Register</title>
+    </head>
+    <body>
+        <form class="register-container">
+            <header>
+                <img src="https://cdn-icons-png.flaticon.com/128/16900/16900261.png" width="130px" height="130px" alt="Logo">
+                <h1>Register</h1>
+            </header>
+            <main>
+                <div class="input-container">
+                    <label for="username"><img src="https://cdn-icons-png.flaticon.com/128/3177/3177440.png" width="30px" height="30px" alt="Username Icon"></label>
+                    <input id="username" type="text" name="username" placeholder="Username">
+                </div>
+                <div class="input-container">
+                    <label for="password"><img src="https://cdn-icons-png.flaticon.com/128/10484/10484605.png" width="30px" height="30px" alt="Password Icon"></label>
+                    <input id="password" type="password" name="password" placeholder="Password">
+                </div>
+                <button type="submit" class="register-button">Register</button>
+                <p>Already have an account? <a href="./login.html">Log in</a></p>
+            </main>
+        </form>
+
+        <script>
+            document.querySelector('.register-container').addEventListener('submit', async function(e){
+                const formData = new FormData(this)
+                const data = {
+                    username: formData.get("username"),
+                    password: formData.get("password")
+                };
+                e.preventDefault()
+
+                const response = await postData(data, "http://localhost:8080/user/register")
+                if (!response) {
+                    console.log("error")
+                }
+                setTimeout(function(){
+                    location.href = "./login.html"
+                }, 1000)
+            })
+
+        </script>
+        <script src="./js/modal.js"></script>
+        <script src="./js/fetch.js"></script>
+    </body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In</title>
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+    <form class="login-container">
+        <header>
+            <img src="https://cdn-icons-png.flaticon.com/128/6104/6104865.png" width="130px" height="130px" alt="Logo">
+            <h1>Todo App</h1>
+        </header>
+        <main>
+            <div class="input-container">
+                <label for="username"><img src="https://cdn-icons-png.flaticon.com/128/3177/3177440.png" width="30px" height="30px" alt="Username Icon"></label>
+                <input id="username" type="text" name="username" placeholder="Username">
+            </div>
+            <div class="input-container">
+                <label for="password"><img src="https://cdn-icons-png.flaticon.com/128/10484/10484605.png" width="30px" height="30px" alt="Password Icon"></label>
+                <input id="password" type="password" name="password" placeholder="Password">
+            </div>
+            <button type="submit" class="login-button">Log In</button>
+            <p>No account? <a href="register.html">Register here</a></p>
+        </main>
+    </form>
+
+    <script>
+        async function postData(data, url) {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            return response;
+        }
+
+        document.querySelector('.login-container').addEventListener('submit', async function(e){
+            e.preventDefault();
+            const formData = new FormData(this);
+            const data = {
+                username: formData.get("username"),
+                password: formData.get("password")
+            };
+            
+            try {
+                const response = await postData(data, "http://localhost:8080/api/login");
+                if (!response.ok) {
+                    console.error('Login failed');
+                    return;
+                }
+                
+                const token = response.headers.get("X-AUTH-TOKEN");
+                localStorage.setItem("X-AUTH-TOKEN", token);
+                
+                const responseJson = await response.json();
+                localStorage.setItem("USERNAME", responseJson.username);
+                localStorage.setItem("USER-ID", responseJson.userId);
+                
+                // Redirect to another page after successful login
+                location.href = "http://127.0.0.1:5500/todoApp/src/main/resources/static/index.html";
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+    </script>
+</body>
+</html>

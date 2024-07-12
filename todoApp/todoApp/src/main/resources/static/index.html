@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" type="text/css" href="./css/app.css" />
+        <title>Document</title>
+    </head>
+
+    <body>
+      <header>
+        <h1 class="title">Todo Application</h1>
+        <button onclick="logout()">Log out</button>
+        <div id="username" class="username">Username : </div>
+      </header>
+
+      <main>
+        <div id="mainField">
+        </div>
+        <div class="icon-group">
+          <img id="trash-can-img" src="./image/trash-can.png" width="80" height="100">
+          <img id="post-it-img" src="./image/postit.png" width="150" height="150">
+        </div>
+      </main>
+
+
+
+      <!-- ローディング画面 -->
+      <div id="loading">
+        <div class="spinner"></div>
+        <div id="errorMessage"></div>
+      </div>
+
+
+    </body>
+    <script>
+      document.addEventListener("DOMContentLoaded", async function() {
+          const spinner = document.getElementById('loading');
+          if (!await checkToken()) {
+              document.getElementById("errorMessage").innerHTML = "不正なアクセスを確認しました。ログイン画面にリダイレクトします。"
+              setTimeout(() => location.href = "./login.html", 2000)
+              return;
+          }
+          spinner.classList.add('loaded');
+          document.getElementById("username").innerHTML += localStorage.getItem("USERNAME")
+      })
+
+      function logout() {
+        localStorage.removeItem("X-AUTH-TOKEN")
+        localStorage.removeItem("USER-ID")
+        localStorage.removeItem("USERNAME")
+        location.href = "http://127.0.0.1:5500/todoApp/src/main/resources/static/login.html"
+      }
+    </script>
+
+    <script src="./js/fetch.js"></script>
+    <script src="./js/rendering.js"></script>
+    <script src="./js/modal.js"></script>
+    <script src="./js/drag.js"></script>
+
+</html>

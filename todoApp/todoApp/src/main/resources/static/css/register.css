@@ -1,0 +1,93 @@
+body {
+    background-color: rgb(233, 233, 233);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.register-container {
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    padding: 2rem;
+    text-align: center;
+}
+
+header img {
+    margin-top: 1rem;
+}
+
+header h1 {
+    margin: 1rem 0;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #eaeaea;
+    margin: 1rem 0;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+}
+
+.input-group label {
+    margin-right: 0.5rem;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    margin: 1rem 0;
+}
+
+.input-container img {
+    margin-right: 0.5rem;
+}
+
+.input-container input {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    flex: 1;
+    padding: 0.5rem;
+}
+
+.submit-button {
+    background-color: #3366FF;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 1rem;
+    margin: 1rem 0;
+    padding: 0.75rem 2rem;
+    text-decoration: none;
+}
+
+footer p {
+    font-size: 0.9rem;
+    margin: 1rem 0 0;
+}
+
+footer a {
+    color: #3366FF;
+    text-decoration: none;
+}
+
+.register-button {
+    background-color: #3366FF;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 1rem;
+    margin: 1rem 0;
+    padding: 0.75rem 2rem;
+    text-decoration: none;
+}
