@@ -32,43 +32,8 @@
                         <th>Updated At</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>12</td>
-                        <td>Test1</td>
-                        <td>12/07/24</td>
-                        <td>Red</td>
-                        <td>True</td>
-                        <td>Position X</td>
-                        <td>Position Y</td>
-                        <td>12/07/24</td>
-                        <td>12/07/24</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>11</td>
-                        <td>Test2</td>
-                        <td>12/07/24</td>
-                        <td>Blue</td>
-                        <td>False</td>
-                        <td>Position X</td>
-                        <td>Position Y</td>
-                        <td>12/07/24</td>
-                        <td>12/07/24</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>22</td>
-                        <td>Test3</td>
-                        <td>12/07/24</td>
-                        <td>Green</td>
-                        <td>True</td>
-                        <td>Position X</td>
-                        <td>Position Y</td>
-                        <td>12/07/24</td>
-                        <td>12/07/24</td>
-                    </tr>
+                <tbody id="todoTableBody">
+                    <!-- Rows will be inserted here by JavaScript -->
                 </tbody>
             </table>
         </div>
@@ -88,13 +53,40 @@
         document.addEventListener("DOMContentLoaded", async function() {
             const spinner = document.getElementById('loading');
             if (!await checkToken()) {
-                document.getElementById("errorMessage").innerHTML = "不正なアクセスを確認しました。ログイン画面にリダイレクトします。"
-                setTimeout(() => location.href = "./login.html", 2000)
+                document.getElementById("errorMessage").innerHTML = "Unauthorized access has been confirmed. Redirect to login screen."
+                setTimeout(() => location.href = "./login.html", 1000)
                 return;
             }
             spinner.classList.add('loaded');
             document.getElementById("username").innerHTML += localStorage.getItem("USERNAME")
+            loadTodos();
         });
+
+        async function loadTodos() {
+            try {
+                const response = await fetch('/api/todos');
+                const todos = await response.json();
+                const todoTableBody = document.getElementById('todoTableBody');
+                todos.forEach(todo => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${todo.id}</td>
+                        <td>${todo.userid}</td>
+                        <td>${todo.content}</td>
+                        <td>${todo.due_date}</td>
+                        <td>${todo.color}</td>
+                        <td>${todo.is_checked}</td>
+                        <td>${todo.position_x}</td>
+                        <td>${todo.position_y}</td>
+                        <td>${todo.created_at}</td>
+                        <td>${todo.updated_at}</td>
+                    `;
+                    todoTableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading todos:', error);
+            }
+        }
 
         function logout() {
             localStorage.removeItem("X-AUTH-TOKEN")
