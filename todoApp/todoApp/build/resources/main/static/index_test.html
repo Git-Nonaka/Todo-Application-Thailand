@@ -64,20 +64,16 @@
 
         async function loadTodos() {
             try {
-                const userId = localStorage.getItem("USER-ID");
-                const response = await fetch(`http://localhost:8080/todo/${userId}`);
-                if (!response.ok) {
-                    throw new Error('Failed to load todos');
-                }
+                const response = await fetch('/api/todos');
                 const todos = await response.json();
                 const todoTableBody = document.getElementById('todoTableBody');
                 todos.forEach(todo => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${todo.id}</td>
-                        <td>${todo.user_id}</td>
+                        <td>${todo.userid}</td>
                         <td>${todo.content}</td>
-                        <td>${todo.dueDate}</td>
+                        <td>${todo.due_date}</td>
                         <td>${todo.color}</td>
                         <td>${todo.is_checked}</td>
                         <td>${todo.position_x}</td>

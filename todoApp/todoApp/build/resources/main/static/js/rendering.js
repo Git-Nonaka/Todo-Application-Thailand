@@ -1,11 +1,15 @@
 document.addEventListener("DOMContentLoaded", fetchTodo())
 
 async function fetchTodo() {
-    await checkToken()
-    const userId = localStorage.getItem("USER-ID")
-    const todo = await getData(`http://localhost:8080/todo/${userId}`)
-    const todoJson = await todo.json()
-    renderTodo(todoJson)
+    await checkToken();
+    const userId = localStorage.getItem("USER-ID");
+    const todoResponse = await getData(`http://localhost:8080/todo/${userId}`);
+    if (todoResponse) {
+        const todoJson = await todoResponse.json();
+        renderTodo(todoJson);
+    } else {
+        console.error("Failed to fetch todo data.");
+    }
 }
 
 function renderTodo(todoJson) {
