@@ -33,24 +33,23 @@ async function getData(url) {
 
 /*****     データ送信用メソッド     *****/
 async function postData(data, url) {
-    await checkToken();
+    checkToken()
     try {
-        const response = await fetch(url, {
-            method: "POST",
-            body: JSON.stringify(data),
+        const response = await fetch(url , {
+            method : "POST",
+            body : JSON.stringify(data),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type':'application/json'
             }
         });
-        if (response.ok) {
+        if(!response.ok) {
+            console.error(await response.json())
             return response;
-        } else {
-            console.error(`Failed to post data: ${response.status} - ${await response.json()}`);
-            return false;
-        }
-    } catch (error) {
-        console.error('Error posting data:', error);
-        return false;
+        };
+        return response;
+        
+    } catch(e) {
+        return false
     }
 }
 
