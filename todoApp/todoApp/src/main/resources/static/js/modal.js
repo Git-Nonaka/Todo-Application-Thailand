@@ -7,27 +7,33 @@ document.querySelector('#post-it-img').addEventListener('click', async function(
     innerElement.classList.add('inner');
 
     innerElement.innerHTML = `
-    <button type="button" class="modal-close btn btn-outline-secondary" id="modalClose">×</button>
-    <form id="todoForm">
-        <div class="form-group">
-            <label for="dueDate">Due Date:</label>
-            <input class="form-control" type="date" id="dueDate" name="dueDate" required>
-        </div>
-        <div class="form-group">
-            <label for="content">Content:</label>
-            <textarea class="form-control" rows="4" id="content" name="content" maxlength="255" required></textarea>
-        </div>
-        <div class="form-group">
-            <label for="color">Color:</label>
-            <select class="form-control" id="color" name="color" required>
-                <option value="RED">Red</option>
-                <option value="GREEN">Green</option>
-                <option value="BLUE">Blue</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary add-btn">Add Todo</button>
-    </form>
+    <div class="modal-content">
+        <button type="button" class="modal-close btn btn-outline-secondary" id="modalClose">×</button>
+        <form id="todoForm">
+            <div class="form-group">
+                <label for="dueDate">Due Date :</label>
+                <input class="form-control" type="date" id="dueDate" name="dueDate" required>
+            </div>
+            <div class="form-group">
+                <label for="content">Content :</label>
+                <textarea class="form-control" rows="2" id="content" name="content" maxlength="255" required 
+                    style="resize: none; width: 100%; border: 1px solid #ccc; background-color: #fff; height: 12px; width: 200px; margin-top: 93px; font-size: 14px;"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="color">Color :</label>
+                <select class="form-control" id="color" name="color" required>
+                    <option value="RED">Red</option>
+                    <option value="GREEN">Green</option>
+                    <option value="BLUE">Blue</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary add-btn">Add Todo</button>
+            </div>
+        </form>
+    </div>
     `;
+
 
     modalElement.appendChild(innerElement);
     document.body.appendChild(modalElement);
@@ -69,6 +75,7 @@ document.querySelector('#post-it-img').addEventListener('click', async function(
             });
 
             if (response.ok) {
+                fetchTodo();
                 loadTodos();
                 closeModalWindow(modalElement);
             } else {
