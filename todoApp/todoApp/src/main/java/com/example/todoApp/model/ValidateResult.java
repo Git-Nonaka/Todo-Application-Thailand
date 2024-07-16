@@ -4,6 +4,11 @@ public class ValidateResult {
     private final boolean ok;
     private final String errorMessage;
 
+    private ValidateResult(boolean ok, String errorMessage) {
+        this.ok = ok;
+        this.errorMessage = errorMessage;
+    }
+
     public boolean ok() {
         return ok;
     }
@@ -16,12 +21,7 @@ public class ValidateResult {
         return new ValidateResult(true, "");
     }
 
-    public static ValidateResult failed(String text) {
-        return new ValidateResult(false, text);
-    }
-
-    private ValidateResult(boolean ok, String message) {
-        this.ok = ok;
-        this.errorMessage = message;
+    public static ValidateResult failed(String errorMessage) {
+        return new ValidateResult(false, errorMessage);
     }
 }

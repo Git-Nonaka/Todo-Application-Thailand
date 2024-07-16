@@ -23,7 +23,6 @@ document.querySelector('#post-it-img').addEventListener('click', async function(
                 <option value="RED">Red</option>
                 <option value="GREEN">Green</option>
                 <option value="BLUE">Blue</option>
-                <option value="YELLOW">Yellow</option>
             </select>
         </div>
         <button type="submit" class="btn btn-primary add-btn">Add Todo</button>
@@ -49,9 +48,9 @@ document.querySelector('#post-it-img').addEventListener('click', async function(
         }
 
         const requestBody = {
-            user_id: userId,
+            userId: userId,
             content: formData.get("content"),
-            due_date: formData.get("dueDate"),
+            dueDate: formData.get("dueDate"),
             color: formData.get("color"),
             isChecked: false,
             positionX: 0.0,
@@ -61,12 +60,19 @@ document.querySelector('#post-it-img').addEventListener('click', async function(
         console.log("Request Body:", requestBody);
 
         try {
-            const { ok, responseData } = await postData(requestBody, "http://localhost:8080/todo");
+            const response = await fetch("http://localhost:8080/todo", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+            });
 
-            if (ok) {
+            if (response.ok) {
                 loadTodos();
                 closeModalWindow(modalElement);
             } else {
+                const responseData = await response.json();
                 console.error('Failed to add todo:', responseData);
             }
         } catch (error) {
@@ -75,12 +81,9 @@ document.querySelector('#post-it-img').addEventListener('click', async function(
     });
 });
 
-
-
 function closeModalWindow(modalElement) {
     document.body.removeChild(modalElement);
 }
-
 
 async function loadTodos() {
     try {
@@ -102,10 +105,7 @@ async function loadTodos() {
             `;
             todoTableBody.appendChild(row);
         });
-        
     } catch (error) {
         console.error('Error loading todos:', error);
     }
 }
-
-

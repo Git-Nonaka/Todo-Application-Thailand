@@ -16,6 +16,7 @@ public class TodoRequest {
     private double positionX;
     private double positionY;
 
+    // Getters and Setters
     public void setUserId(int userId) {
         this.userId = userId;
     }
@@ -61,6 +62,21 @@ public class TodoRequest {
             }
         } catch (Exception e) {
             return ValidateResult.failed("Invalid due date format. Please use yyyy-MM-dd.");
+        }
+
+        // Check for valid userId
+        if (userId <= 0) {
+            return ValidateResult.failed("User ID must be greater than 0.");
+        }
+
+        // Check for non-empty color
+        if (color == null || color.isEmpty()) {
+            return ValidateResult.failed("Color can't be empty.");
+        }
+
+        // Check for non-negative position values
+        if (positionX < 0 || positionY < 0) {
+            return ValidateResult.failed("Position X and Y must be non-negative.");
         }
 
         return ValidateResult.success();

@@ -10,24 +10,22 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/todo")
 public class TodoController {
-    public final TodoService service;
+    private final TodoService service;
+
+    @Autowired
+    public TodoController(TodoService service) {
+        this.service = service;
+    }
 
     @GetMapping(value = "/{userId}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public List<TodoModel> getAll(@PathVariable int userId) {
         return service.selectAll(userId);
     }
-
-//    @GetMapping(value = "/{id}", produces = "application/json")
-//    @ResponseStatus(HttpStatus.OK)
-//    public TodoModel getById(@PathVariable int id) {
-//        return service.selectById(id);
-//    }
 
     @PostMapping(produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
@@ -55,10 +53,5 @@ public class TodoController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
         service.deleteTodo(id);
-    }
-
-    @Autowired
-    public TodoController(TodoService service) {
-        this.service = service;
     }
 }

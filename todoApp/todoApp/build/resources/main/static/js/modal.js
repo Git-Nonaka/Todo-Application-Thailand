@@ -23,7 +23,6 @@ document.querySelector('#post-it-img').addEventListener('click', async function(
                 <option value="RED">Red</option>
                 <option value="GREEN">Green</option>
                 <option value="BLUE">Blue</option>
-                <option value="YELLOW">Yellow</option>
             </select>
         </div>
         <button type="submit" class="btn btn-primary add-btn">Add Todo</button>
@@ -53,6 +52,9 @@ document.querySelector('#post-it-img').addEventListener('click', async function(
             content: formData.get("content"),
             due_date: formData.get("dueDate"),
             color: formData.get("color"),
+            isChecked: false,
+            positionX: 0.0,
+            positionY: 0.0,
         };
 
         console.log("Request Body:", requestBody);
@@ -72,6 +74,8 @@ document.querySelector('#post-it-img').addEventListener('click', async function(
     });
 });
 
+
+
 function closeModalWindow(modalElement) {
     document.body.removeChild(modalElement);
 }
@@ -89,27 +93,18 @@ async function loadTodos() {
         todoTableBody.innerHTML = '';
         todos.forEach(todo => {
             const row = document.createElement('tr');
-            let formattedDate = '';
-            if (todo.due_date) {
-                // Assuming todo.due_date is in ISO format (e.g., "2024-07-16T00:00:00Z")
-                const dateObj = new Date(todo.due_date);
-                formattedDate = dateObj.toLocaleString(); // "YYYY-MM-DD" format
-            } else {
-                formattedDate = 'No Data Date';
-            }
-        
             row.innerHTML = `
                 <td>${todo.id}</td>
                 <td>${todo.content}</td>
-                <td>${formattedDate}</td>
+                <td>${todo.dueDate}</td>
                 <td>${todo.color}</td>
             `;
             todoTableBody.appendChild(row);
         });
         
-        
-        
     } catch (error) {
         console.error('Error loading todos:', error);
     }
 }
+
+
