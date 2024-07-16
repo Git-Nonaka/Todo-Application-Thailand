@@ -7,25 +7,31 @@ document.querySelector('#post-it-img').addEventListener('click', async function(
     innerElement.classList.add('inner');
 
     innerElement.innerHTML = `
-    <button type="button" class="modal-close" id="modalClose">×</button>
+    <button type="button" class="modal-close btn btn-outline-secondary" id="modalClose">×</button>
     <form id="todoForm">
-        <label for="dueDate">Due Date:</label>
-        <input class="date-input" type="date" name="dueDate" required></input>
-        <br>
-        <label for="content">Content:</label>
-        <textarea rows="4" cols="50" maxlength="100" name="content" required></textarea>
-        <br>
-        <label for="color">Color:</label>
-        <select name="color" required>
-            <option value="RED">Red</option>
-            <option value="GREEN">Green</option>
-            <option value="BLUE">Blue</option>
-            <option value="YELLOW">Yellow</option>
-        </select>
-        <br>
-        <button class="add-btn">Add</button>
+        <div class="form-group">
+            <label for="dueDate">Due Date:</label>
+            <input class="form-control" type="date" id="dueDate" name="dueDate" required>
+        </div>
+        <div class="form-group">
+            <label for="content">Content:</label>
+            <textarea class="form-control" rows="4" id="content" name="content" maxlength="100" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="color">Color:</label>
+            <select class="form-control" id="color" name="color" required>
+                <option value="RED">Red</option>
+                <option value="GREEN">Green</option>
+                <option value="BLUE">Blue</option>
+                <option value="YELLOW">Yellow</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary add-btn">Add Todo</button>
     </form>
     `;
+
+
+
 
     modalElement.appendChild(innerElement);
     document.body.appendChild(modalElement);
@@ -101,8 +107,6 @@ async function loadTodos() {
                 <td>${todo.content}</td>
                 <td>${todo.dueDate}</td>
                 <td>${todo.color}</td>
-                <td>${todo.created_at}</td>
-                <td>${todo.updated_at}</td>
             `;
             todoTableBody.appendChild(row);
         });

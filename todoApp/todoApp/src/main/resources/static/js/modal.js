@@ -1,5 +1,5 @@
 document.querySelector('#post-it-img').addEventListener('click', async function() {
-    // สร้าง Element ของ Modal
+
     const modalElement = document.createElement('div');
     const innerElement = document.createElement('div');
 
@@ -30,18 +30,13 @@ document.querySelector('#post-it-img').addEventListener('click', async function(
     </form>
     `;
 
-
-
-
     modalElement.appendChild(innerElement);
     document.body.appendChild(modalElement);
 
-    // เพิ่ม Event Listener สำหรับปุ่มปิด Modal
     document.getElementById("modalClose").addEventListener("click", function() {
         closeModalWindow(modalElement);
     });
 
-    // เพิ่ม Event Listener สำหรับปุ่ม Add Todo
     document.querySelector(".add-btn").addEventListener("click", async function(event) {
         event.preventDefault();
         const form = document.getElementById('todoForm');
@@ -61,14 +56,16 @@ document.querySelector('#post-it-img').addEventListener('click', async function(
             created_at: new Date().toISOString()
         };
 
+        console.log("Request Body:", requestBody);
+
         try {
-            const response = await postData(requestBody, "http://localhost:8080/todo");
-            if (response.ok) {
+            const { ok, responseData } = await postData(requestBody, "http://localhost:8080/todo");
+
+            if (ok) {
                 loadTodos();
                 closeModalWindow(modalElement);
             } else {
-                const errorText = await response.text();
-                console.error('Failed to add todo:', response.statusText, errorText);
+                console.error('Failed to add todo:', responseData);
             }
         } catch (error) {
             console.error('Error adding todo:', error);
@@ -81,14 +78,28 @@ function closeModalWindow(modalElement) {
 }
 
 async function postData(data, url) {
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    });
-    return response;
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        const responseData = response.headers.get('content-type')?.includes('application/json')
+            ? await response.json()
+            : await response.text();
+
+        if (!response.ok) {
+            console.error('Error:', responseData);
+        }
+
+        return { ok: response.ok, responseData };
+    } catch (error) {
+        console.error('Network Error:', error);
+        throw error;
+    }
 }
 
 async function loadTodos() {
@@ -100,6 +111,7 @@ async function loadTodos() {
         }
         const todos = await response.json();
         const todoTableBody = document.getElementById('todoTableBody');
+        todoTableBody.innerHTML = '';
         todos.forEach(todo => {
             const row = document.createElement('tr');
             row.innerHTML = `
@@ -107,8 +119,6 @@ async function loadTodos() {
                 <td>${todo.content}</td>
                 <td>${todo.dueDate}</td>
                 <td>${todo.color}</td>
-                <td>${todo.created_at}</td>
-                <td>${todo.updated_at}</td>
             `;
             todoTableBody.appendChild(row);
         });
