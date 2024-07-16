@@ -15,7 +15,7 @@ document.querySelector('#post-it-img').addEventListener('click', async function(
         </div>
         <div class="form-group">
             <label for="content">Content:</label>
-            <textarea class="form-control" rows="4" id="content" name="content" maxlength="100" required></textarea>
+            <textarea class="form-control" rows="4" id="content" name="content" maxlength="255" required></textarea>
         </div>
         <div class="form-group">
             <label for="color">Color:</label>
@@ -53,7 +53,9 @@ document.querySelector('#post-it-img').addEventListener('click', async function(
             content: formData.get("content"),
             due_date: formData.get("dueDate"),
             color: formData.get("color"),
-            created_at: new Date().toISOString()
+            isChecked: false,
+            positionX: 0.0,
+            positionY: 0.0,
         };
 
         console.log("Request Body:", requestBody);
@@ -73,34 +75,12 @@ document.querySelector('#post-it-img').addEventListener('click', async function(
     });
 });
 
+
+
 function closeModalWindow(modalElement) {
     document.body.removeChild(modalElement);
 }
 
-async function postData(data, url) {
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
-
-        const responseData = response.headers.get('content-type')?.includes('application/json')
-            ? await response.json()
-            : await response.text();
-
-        if (!response.ok) {
-            console.error('Error:', responseData);
-        }
-
-        return { ok: response.ok, responseData };
-    } catch (error) {
-        console.error('Network Error:', error);
-        throw error;
-    }
-}
 
 async function loadTodos() {
     try {
@@ -122,7 +102,10 @@ async function loadTodos() {
             `;
             todoTableBody.appendChild(row);
         });
+        
     } catch (error) {
         console.error('Error loading todos:', error);
     }
 }
+
+

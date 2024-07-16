@@ -55,33 +55,7 @@
             document.getElementById("username").innerHTML += localStorage.getItem("USERNAME")
             loadTodos();
         });
-
-        async function loadTodos() {
-        try {
-            const userId = localStorage.getItem("USER-ID");
-            const response = await fetch(`http://localhost:8080/todo/${userId}`);
-            if (!response.ok) {
-                throw new Error('Failed to load todos');
-            }
-            const todos = await response.json();
-            console.log(todos); // ตรวจสอบให้แน่ใจว่าข้อมูล todos ไม่มี created_at และ updated_at
-            const todoTableBody = document.getElementById('todoTableBody');
-            todos.forEach(todo => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${todo.id}</td>
-                    <td>${todo.content}</td>
-                    <td>${todo.dueDate}</td>
-                    <td>${todo.color}</td>
-                `;
-                todoTableBody.appendChild(row);
-            });
-        } catch (error) {
-            console.error('Error loading todos:', error);
-        }
-    }
-
-        
+     
         function logout() {
             localStorage.removeItem("X-AUTH-TOKEN")
             localStorage.removeItem("USER-ID")

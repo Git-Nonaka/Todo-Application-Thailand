@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" type="text/css" href="./css/app_test.css" />
+    <link rel="stylesheet" type="text/css" href="./css/app.css" />
     <title>Todo Application</title>
 </head>
 <body>
@@ -24,8 +24,6 @@
                         <th>Content</th>
                         <th>Due Date</th>
                         <th>Color</th>
-                        <th>Created At</th>
-                        <th>Updated At</th>
                     </tr>
                 </thead>
                 <tbody id="todoTableBody">
@@ -57,33 +55,7 @@
             document.getElementById("username").innerHTML += localStorage.getItem("USERNAME")
             loadTodos();
         });
-
-        async function loadTodos() {
-            try {
-                const userId = localStorage.getItem("USER-ID");
-                const response = await fetch(`http://localhost:8080/todo/${userId}`);
-                if (!response.ok) {
-                    throw new Error('Failed to load todos');
-                }
-                const todos = await response.json();
-                const todoTableBody = document.getElementById('todoTableBody');
-                todos.forEach(todo => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${todo.id}</td>
-                        <td>${todo.content}</td>
-                        <td>${todo.dueDate}</td>
-                        <td>${todo.color}</td>
-                        <td>${todo.created_at}</td>
-                        <td>${todo.updated_at}</td>
-                    `;
-                    todoTableBody.appendChild(row);
-                });
-            } catch (error) {
-                console.error('Error loading todos:', error);
-            }
-        }
-        
+     
         function logout() {
             localStorage.removeItem("X-AUTH-TOKEN")
             localStorage.removeItem("USER-ID")

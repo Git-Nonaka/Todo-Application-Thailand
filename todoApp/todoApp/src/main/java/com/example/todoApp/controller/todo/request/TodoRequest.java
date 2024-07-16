@@ -1,6 +1,5 @@
 package com.example.todoApp.controller.todo.request;
 
-import com.example.todoApp.model.Color;
 import com.example.todoApp.model.TodoModel;
 import com.example.todoApp.model.ValidateResult;
 
@@ -46,14 +45,23 @@ public class TodoRequest {
     }
 
     public ValidateResult validate() {
-        if (content.equals(""))
-            return ValidateResult.failed("content can't be empty.");
+        if (content == null || content.isEmpty()) {
+            return ValidateResult.failed("Content can't be empty.");
+        }
 
-        if (dueDate.equals(""))
-            return ValidateResult.failed("dueDate can't be empty.");
+        if (dueDate == null || dueDate.isEmpty()) {
+            return ValidateResult.failed("Due date can't be empty.");
+        }
 
-        if(LocalDate.parse(dueDate).isBefore(LocalDate.now()))
-            return ValidateResult.failed("dueDate can't be in the past.");
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate parsedDueDate = LocalDate.parse(dueDate, formatter);
+            if (parsedDueDate.isBefore(LocalDate.now())) {
+                return ValidateResult.failed("Due date can't be in the past.");
+            }
+        } catch (Exception e) {
+            return ValidateResult.failed("Invalid due date format. Please use yyyy-MM-dd.");
+        }
 
         return ValidateResult.success();
     }
