@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  db:
+#    platform: linux/x86_64 // Macの場合は、コメントアウト外す
+    image: mysql:5.7
+    container_name: "todoapp-database"
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: todo_db
+      MYSQL_USER: todo_user
+      MYSQL_PASSWORD: todo_password

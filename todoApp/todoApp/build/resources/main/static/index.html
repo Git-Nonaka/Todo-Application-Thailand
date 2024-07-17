@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="./css/app.css" />
+    <title>Todo Application</title>
+</head>
+<body>
+    <header>
+        <img src="https://cdn-icons-png.flaticon.com/128/5693/5693972.png" width="100px" height="100px" alt="Logo">
+        <h1 class="title">Todo Application</h1>
+        <button onclick="logout()">Log out</button>
+        <div id="username" class="username">Username: </div>
+    </header>
+    <main>
+        <h1>&#9997; Task List</h1>
+        <div class="box-1">
+            <table cellpadding="10px" align="center">
+                <thead bgcolor="#b0bec5">
+                    <tr>
+                        <th>ID</th>
+                        <th>Content</th>
+                        <th>Due Date</th>
+                        <th>Color</th>
+                    </tr>
+                </thead>
+                <tbody id="todoTableBody">
+                    <!-- Rows will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <footer>
+        <div id="mainField"></div>
+        <div class="icon-group">
+            <img id="trash-can-img" src="https://cdn-icons-png.flaticon.com/128/3488/3488237.png" width="110px" height="130px">
+            <img id="post-it-img" src="https://cdn-icons-png.flaticon.com/128/9020/9020363.png" width="110px" height="110px">
+        </div>
+    </footer>
+    <div id="loading">
+        <div class="spinner"></div>
+        <div id="errorMessage"></div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", async function() {
+            const spinner = document.getElementById('loading');
+            if (!await checkToken()) {
+                document.getElementById("errorMessage").innerHTML = "Unauthorized access has been confirmed. Redirect to login screen."
+                setTimeout(() => location.href = "./login.html", 1000)
+                return;
+            }
+            spinner.classList.add('loaded');
+            document.getElementById("username").innerHTML += localStorage.getItem("USERNAME")
+            loadTodos();
+        });
+     
+        function logout() {
+            localStorage.removeItem("X-AUTH-TOKEN")
+            localStorage.removeItem("USER-ID")
+            localStorage.removeItem("USERNAME")
+            location.href = "./login.html"
+        }
+    </script>
+    <script src="./js/fetch.js"></script>
+    <script src="./js/rendering.js"></script>
+    <script src="./js/modal.js"></script>
+    <script src="./js/drag.js"></script>
+</body>
+</html>
