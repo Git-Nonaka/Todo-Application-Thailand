@@ -7,27 +7,33 @@ document.querySelector('#post-it-img').addEventListener('click', async function(
     innerElement.classList.add('inner');
 
     innerElement.innerHTML = `
-    <button type="button" class="modal-close btn btn-outline-secondary" id="modalClose">×</button>
-    <form id="todoForm">
-        <div class="form-group">
-            <label for="dueDate">Due Date:</label>
-            <input class="form-control" type="date" id="dueDate" name="dueDate" required>
-        </div>
-        <div class="form-group">
-            <label for="content">Content:</label>
-            <textarea class="form-control" rows="4" id="content" name="content" maxlength="255" required></textarea>
-        </div>
-        <div class="form-group">
-            <label for="color">Color:</label>
-            <select class="form-control" id="color" name="color" required>
-                <option value="RED">Red</option>
-                <option value="GREEN">Green</option>
-                <option value="BLUE">Blue</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary add-btn">Add Todo</button>
-    </form>
+    <div class="modal-content">
+        <button type="button" class="modal-close btn btn-outline-secondary" id="modalClose">×</button>
+        <form id="todoForm">
+            <div class="form-group">
+                <label for="dueDate">Due Date :</label>
+                <input class="form-control" type="date" id="dueDate" name="dueDate" required>
+            </div>
+            <div class="form-group">
+                <label for="content">Content :</label>
+                <textarea class="form-control" rows="2" id="content" name="content" maxlength="255" required 
+                    style="resize: none; width: 100%; border: 1px solid #ccc; background-color: #fff; height: 12px; width: 200px; margin-top: 93px; font-size: 14px;"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="color">Color :</label>
+                <select class="form-control" id="color" name="color" required>
+                    <option value="RED">Red</option>
+                    <option value="GREEN">Green</option>
+                    <option value="BLUE">Blue</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary add-btn">Add Todo</button>
+            </div>
+        </form>
+    </div>
     `;
+
 
     modalElement.appendChild(innerElement);
     document.body.appendChild(modalElement);
@@ -48,9 +54,9 @@ document.querySelector('#post-it-img').addEventListener('click', async function(
         }
 
         const requestBody = {
-            user_id: userId,
+            userId: userId,
             content: formData.get("content"),
-            due_date: formData.get("dueDate"),
+            dueDate: formData.get("dueDate"),
             color: formData.get("color"),
             isChecked: false,
             positionX: 0.0,
@@ -60,12 +66,20 @@ document.querySelector('#post-it-img').addEventListener('click', async function(
         console.log("Request Body:", requestBody);
 
         try {
-            const { ok, responseData } = await postData(requestBody, "http://localhost:8080/todo");
+            const response = await fetch("http://localhost:8080/todo", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+            });
 
-            if (ok) {
+            if (response.ok) {
+                fetchTodo();
                 loadTodos();
                 closeModalWindow(modalElement);
             } else {
+                const responseData = await response.json();
                 console.error('Failed to add todo:', responseData);
             }
         } catch (error) {
@@ -74,12 +88,9 @@ document.querySelector('#post-it-img').addEventListener('click', async function(
     });
 });
 
-
-
 function closeModalWindow(modalElement) {
     document.body.removeChild(modalElement);
 }
-
 
 async function loadTodos() {
     try {
@@ -101,10 +112,7 @@ async function loadTodos() {
             `;
             todoTableBody.appendChild(row);
         });
-        
     } catch (error) {
         console.error('Error loading todos:', error);
     }
 }
-
-

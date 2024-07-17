@@ -31,7 +31,7 @@ function renderTodo(todoJson) {
             ${elem.content}
         </div>
         <div class="post-it-date">
-            期限: ${elem.dueDate}
+            Deadline : ${elem.dueDate}
         </div>
         `
         postIt.style.top = elem.positionY + "px"
