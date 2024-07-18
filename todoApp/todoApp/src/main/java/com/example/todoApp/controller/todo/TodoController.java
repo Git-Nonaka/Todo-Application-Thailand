@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/todo")
@@ -23,8 +24,11 @@ public class TodoController {
 
     @GetMapping(value = "/{userId}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public List<TodoModel> getAll(@PathVariable int userId) {
-        return service.selectAll(userId);
+    public List<TodoModel> getAll(@PathVariable Optional<Integer> userId) {
+        if (!userId.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User ID is required.");
+        }
+        return service.selectAll(userId.get());
     }
 
     @PostMapping(produces = "application/json")
@@ -44,14 +48,18 @@ public class TodoController {
         ValidateResult validate = request.validate();
         if (!validate.ok()) {
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, validate.errorMessage());
+                HttpStatus.BAD_REQUEST, validate.errorMessage());
         }
         service.updateTodo(request.toModel(id));
-    }
+}
+
 
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable int id) {
-        service.deleteTodo(id);
+    public void delete(@PathVariable Optional<Integer> id) {
+        if (!id.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Todo ID is required.");
+        }
+        service.deleteTodo(id.get());
     }
 }
