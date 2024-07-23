@@ -59,24 +59,32 @@ async function postData(data, url) {
 
 
 /*****     データ更新用メソッド     *****/
-async function putData(data, url) {
-    checkToken()
+async function putData(data, url = '') {
     try {
-        const response = await fetch(url , {
-            method : "PUT",
-            body : JSON.stringify(data),
+        const response = await fetch(url, {
+            method: 'PUT',
             headers: {
-                'Content-Type':'application/json'
-            }
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data) // send data as JSON
         });
-        if(!response.ok) {
-            console.error(await response.json())
-            return false;
-        };
-        return response;
-        
-    } catch(e) {
-        return false
+
+        if (!response.ok) {
+            // Extract response body if exists
+            const responseText = await response.text();
+            throw new Error(`HTTP error! status: ${response.status}, message: ${responseText || response.statusText}`);
+        }
+
+        // Try to parse response as JSON if it exists
+        try {
+            return await response.json();
+        } catch (e) {
+            // No JSON in response, return empty object or null
+            return null;
+        }
+    } catch (error) {
+        console.error("Error in putData:", error);
+        throw error; // Rethrow to handle it in the calling function
     }
 }
 

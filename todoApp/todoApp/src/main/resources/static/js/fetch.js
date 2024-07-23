@@ -66,25 +66,25 @@ async function putData(data, url = '') {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(data) // send data as JSON
+            body: JSON.stringify(data)
         });
 
+        // ตรวจสอบสถานะการตอบกลับ
+        console.log("Response status:", response.status);
+
         if (!response.ok) {
-            // Extract response body if exists
             const responseText = await response.text();
             throw new Error(`HTTP error! status: ${response.status}, message: ${responseText || response.statusText}`);
         }
 
-        // Try to parse response as JSON if it exists
         try {
             return await response.json();
         } catch (e) {
-            // No JSON in response, return empty object or null
-            return null;
+            return null; // No JSON in response
         }
     } catch (error) {
         console.error("Error in putData:", error);
-        throw error; // Rethrow to handle it in the calling function
+        return null; // Return null in case of error
     }
 }
 
