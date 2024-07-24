@@ -283,3 +283,4 @@ input[type=checkbox]:checked + .post-it-checkbox::before {
 input[type=checkbox]:checked + .post-it-checkbox::after {
   opacity: 1;
 }
+

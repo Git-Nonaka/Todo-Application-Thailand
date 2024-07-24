@@ -34,7 +34,7 @@ function enableDrag(objectList) {
 
             console.log(distance)
 
-            if ((distance > 150) && (distance < 160)) {
+            if ((distance > 175) && (distance < 180)) {
                 console.log("Post-it dropped near trash can area");
                 await deletePostIt(id);
             } else {
