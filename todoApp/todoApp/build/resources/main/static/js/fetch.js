@@ -1,49 +1,80 @@
 /*****     tokenが有効かチェック     *****/
 async function checkToken() {
-    const token = localStorage.getItem("X-AUTH-TOKEN")
+    const token = localStorage.getItem("X-AUTH-TOKEN");
+    if (!token) {
+        console.error("No token found");
+        return false;
+    }
+
     const header = { 
-        'X-AUTH-TOKEN' :"Bearer " + token 
+        'Authorization': "Bearer " + token  // ใช้ 'Authorization' แทน 'X-AUTH-TOKEN'
+    };
+
+    try {
+        const response = await fetch(`http://localhost:8080/check`, {
+            method: "GET",
+            headers: header
+        });
+
+        if (!response.ok) {
+            console.error(`Token check failed with status ${response.status}: ${await response.text()}`);
+            return false;
+        }
+        return true;
+    } catch (error) {
+        console.error("Error checking token:", error);
+        return false;
     }
-    const response = await fetch(`http://localhost:8080/check`, {
-        method: "GET",
-        headers: header
-    })
-    if(!response.ok) {
-        console.error(await response.json())
-        return false
-    }
-    return response
 }
+
+
 
 /*****     データ取得用メソッド     *****/
 async function getData(url) {
-    checkToken()
+    const tokenValid = await checkToken();
+    if (!tokenValid) {
+        console.error("Invalid token");
+        return false;
+    }
+
     try {
-        const response = await fetch(url);
-    
-        if(!response.ok) {
-            console.error(await response.json())
-            return response
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem("X-AUTH-TOKEN")
+            }
+        });
+
+        if (!response.ok) {
+            console.error(`Failed to fetch data: ${response.status}, ${await response.text()}`);
+            return false;
         }
         return response;
-    } catch(e) {
-        return false
+    } catch (e) {
+        console.error("Error fetching data:", e);
+        return false;
     }
 }
 
+
 /*****     データ送信用メソッド     *****/
 async function postData(data, url) {
-    checkToken();
+    const tokenValid = await checkToken();
+    if (!tokenValid) {
+        console.error("Invalid token");
+        return { ok: false, responseData: "Invalid token" };
+    }
+
     try {
         const response = await fetch(url, {
             method: "POST",
             body: JSON.stringify(data),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem("X-AUTH-TOKEN")
             }
         });
 
-        const responseData = await response.json(); // Assuming response is JSON
+        const responseData = await response.json();
 
         if (!response.ok) {
             console.error('Failed to POST data:', response.status, responseData);
@@ -58,49 +89,53 @@ async function postData(data, url) {
 }
 
 
+
 /*****     データ更新用メソッド     *****/
-async function putData(data, url = '') {
+async function putData(data, url) {
     try {
         const response = await fetch(url, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem("X-AUTH-TOKEN")
             },
             body: JSON.stringify(data)
         });
-
-        // ตรวจสอบสถานะการตอบกลับ
-        console.log("Response status:", response.status);
-
         if (!response.ok) {
-            const responseText = await response.text();
-            throw new Error(`HTTP error! status: ${response.status}, message: ${responseText || response.statusText}`);
+            const errorText = await response.text();
+            throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
         }
-
-        try {
-            return await response.json();
-        } catch (e) {
-            return null; // No JSON in response
-        }
+        return response;
     } catch (error) {
-        console.error("Error in putData:", error);
-        return null; // Return null in case of error
+        console.error('Error in putData:', error);
+        throw error;
     }
 }
 
+
 /*****     データ削除用メソッド     *****/
 async function deleteData(url) {
-    checkToken()
+    const tokenValid = await checkToken();
+    if (!tokenValid) {
+        console.error("Invalid token");
+        return false;
+    }
+
     try {
         const response = await fetch(url, {
             method: "DELETE",
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem("X-AUTH-TOKEN")
+            }
         });
+
         if (!response.ok) {
-            console.error(await response.json())
-            return false
-        };
-        return response
-    } catch(e) {
-        return false
+            console.error(`Failed to DELETE data: ${response.status}, ${await response.text()}`);
+            return false;
+        }
+        return response;
+    } catch (e) {
+        console.error("Error deleting data:", e);
+        return false;
     }
 }

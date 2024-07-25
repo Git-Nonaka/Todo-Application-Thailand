@@ -56,16 +56,17 @@ public class TodoDatasource implements TodoRepository {
                      "SET content = ?, due_date = ?, color = ?, is_checked = ?, position_x = ?, position_y = ? " +
                      "WHERE id = ?";
         jdbcTemplate.update(
-                sql,
-                todo.getContent(),
-                todo.getDueDate(),
-                todo.getColor(),
-                todo.isChecked(),
-                todo.getPositionX(),
-                todo.getPositionY(),
-                todo.getId()
+            sql,
+            todo.getContent(),
+            todo.getDueDate(),
+            todo.getColor(),
+            todo.isChecked(),
+            todo.getPositionX(),
+            todo.getPositionY(),
+            todo.getId()
         );
     }
+
 
     @Override
     public void deleteTodo(int id) {
@@ -81,9 +82,9 @@ public class TodoDatasource implements TodoRepository {
                 (String) record.get("content"),
                 ((Date) record.get("due_date")).toLocalDate(),
                 (String) record.get("color"),
-                (boolean) record.get("is_checked"),
+                ((Integer) record.get("is_checked")) == 1,  // แปลงจาก int เป็น boolean
                 (Double) record.get("position_x"),
                 (Double) record.get("position_y")
         );
-    }
+    }    
 }

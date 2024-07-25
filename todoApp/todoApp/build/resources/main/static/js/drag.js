@@ -6,6 +6,8 @@ function enableDrag(objectList) {
             if (event.buttons) {
                 const screenWidth = window.innerWidth;
                 const screenHeight = window.innerHeight;
+
+                // Update position while dragging
                 this.style.left = Math.max(0, Math.min(this.offsetLeft + event.movementX, screenWidth - this.offsetWidth)) + 'px';
                 this.style.top = Math.max(document.querySelector("header").offsetHeight, Math.min(this.offsetTop + event.movementY, screenHeight - this.offsetHeight)) + 'px';
                 this.setPointerCapture(event.pointerId);
@@ -22,26 +24,26 @@ function enableDrag(objectList) {
             const postItRect = this.getBoundingClientRect();
             const trashCanRect = trashCan.getBoundingClientRect();
 
+            // Expand trash can area for detection
             const expandedTrashCanRect = {
-                left: trashCanRect.left,
-                top: trashCanRect.top,
-                right: trashCanRect.right,
-                bottom: trashCanRect.bottom
+                left: trashCanRect.left - 50,
+                top: trashCanRect.top - 50,
+                right: trashCanRect.right + 50,
+                bottom: trashCanRect.bottom + 50
             };
 
+            // Calculate distance between post-it and trash can
             const distance = getDistance(postItRect, expandedTrashCanRect);
             const threshold = 100;
 
-            console.log(distance)
-
-            if ((distance > 150) && (distance < 160)) {
+            if (distance < threshold) {
                 console.log("Post-it dropped near trash can area");
                 await deletePostIt(id);
             } else {
                 console.log("Post-it not near trash can area");
             }
 
-            // อัปเดตตำแหน่งหลังจากลากเสร็จ
+            // Update position after drag
             const newLeft = this.offsetLeft;
             const newTop = this.offsetTop;
             await updatePosition(event, newLeft, newTop);
@@ -51,13 +53,12 @@ function enableDrag(objectList) {
     });
 
     document.addEventListener("pointermove", function() {
-        // ตรวจสอบและอัพเดตสถานะถังขยะ
         const postItList = document.querySelectorAll(".post-it");
         postItList.forEach(postIt => {
             const postItRect = postIt.getBoundingClientRect();
             const trashCanRect = trashCan.getBoundingClientRect();
 
-            // ขยายพื้นที่รับรู้การลากของถังขยะ
+            // Expand trash can area for drag detection
             const expandedTrashCanRect = {
                 left: trashCanRect.left - 50,
                 top: trashCanRect.top - 50,
@@ -66,7 +67,7 @@ function enableDrag(objectList) {
             };
 
             const distance = getDistance(postItRect, expandedTrashCanRect);
-            const threshold = 300; // กำหนดระยะทางที่อนุญาต
+            const threshold = 300;
 
             if (distance < threshold) {
                 trashCan.classList.add("highlight");
@@ -78,11 +79,10 @@ function enableDrag(objectList) {
 }
 
 function getDistance(rect1, rect2) {
-    const dx = Math.max(rect1.left, rect2.left) - Math.min(rect1.right, rect2.right);
-    const dy = Math.max(rect1.top, rect2.top) - Math.min(rect1.bottom, rect2.bottom);
+    const dx = Math.max(0, rect1.left - rect2.right, rect2.left - rect1.right);
+    const dy = Math.max(0, rect1.top - rect2.bottom, rect2.top - rect1.bottom);
     return Math.sqrt(dx * dx + dy * dy);
 }
-
 
 async function deletePostIt(id) {
     try {
@@ -100,7 +100,7 @@ async function deletePostIt(id) {
 }
 
 async function updatePosition(event, left, top) {
-    const postIt = event.target.closest('.post-it'); // ใช้ closest เพื่อให้แน่ใจว่าเลือกได้ถูกต้อง
+    const postIt = event.target.closest('.post-it');
     const id = postIt.getAttribute("data-id");
     const userId = postIt.getAttribute("data-userId");
     

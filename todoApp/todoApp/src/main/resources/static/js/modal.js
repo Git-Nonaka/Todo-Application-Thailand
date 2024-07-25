@@ -1,48 +1,37 @@
 document.querySelector('#post-it-img').addEventListener('click', async function() {
+    const modalElement = createModal(`
+        <div class="modal-content">
+            <button type="button" class="modal-close btn btn-outline-secondary" id="modalClose">×</button>
+            <form id="todoForm">
+                <div class="form-group">
+                    <label for="dueDate">Due Date :</label>
+                    <input class="form-control" type="date" id="dueDate" name="dueDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="content">Content :</label>
+                    <textarea class="form-control" rows="2" id="content" name="content" maxlength="255" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="color">Color :</label>
+                    <select class="form-control" id="color" name="color" required>
+                        <option value="RED">Red</option>
+                        <option value="GREEN">Green</option>
+                        <option value="BLUE">Blue</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary add-btn">Add Todo</button>
+                </div>
+            </form>
+        </div>
+    `);
 
-    const modalElement = document.createElement('div');
-    const innerElement = document.createElement('div');
-
-    modalElement.classList.add('modal');
-    innerElement.classList.add('inner');
-
-    innerElement.innerHTML = `
-    <div class="modal-content">
-        <button type="button" class="modal-close btn btn-outline-secondary" id="modalClose">×</button>
-        <form id="todoForm">
-            <div class="form-group">
-                <label for="dueDate">Due Date :</label>
-                <input class="form-control" type="date" id="dueDate" name="dueDate" required>
-            </div>
-            <div class="form-group">
-                <label for="content">Content :</label>
-                <textarea class="form-control" rows="2" id="content" name="content" maxlength="255" required 
-                    style="resize: none; width: 100%; border: 1px solid #ccc; background-color: #fff; height: 12px; width: 200px; margin-top: 93px; font-size: 14px;"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="color">Color :</label>
-                <select class="form-control" id="color" name="color" required>
-                    <option value="RED">Red</option>
-                    <option value="GREEN">Green</option>
-                    <option value="BLUE">Blue</option>
-                </select>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary add-btn">Add Todo</button>
-            </div>
-        </form>
-    </div>
-    `;
-
-
-    modalElement.appendChild(innerElement);
-    document.body.appendChild(modalElement);
-
-    document.getElementById("modalClose").addEventListener("click", function() {
+    document.getElementById("modalClose").addEventListener("click", function(event) {
+        event.stopPropagation();
         closeModalWindow(modalElement);
     });
 
-    document.querySelector(".add-btn").addEventListener("click", async function(event) {
+    document.getElementById("todoForm").addEventListener("submit", async function(event) {
         event.preventDefault();
         const form = document.getElementById('todoForm');
         const formData = new FormData(form);
@@ -66,17 +55,24 @@ document.querySelector('#post-it-img').addEventListener('click', async function(
         console.log("Request Body:", requestBody);
 
         try {
+            const tokenValid = await checkToken();
+            if (!tokenValid) {
+                console.error("Invalid token");
+                return;
+            }
+
             const response = await fetch("http://localhost:8080/todo", {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem("X-AUTH-TOKEN")
                 },
                 body: JSON.stringify(requestBody)
             });
 
             if (response.ok) {
                 fetchTodo();
-                loadTodos();
+                loadTodos(); // Update todos
                 closeModalWindow(modalElement);
             } else {
                 const responseData = await response.json();
@@ -88,6 +84,20 @@ document.querySelector('#post-it-img').addEventListener('click', async function(
     });
 });
 
+function createModal(content) {
+    const modalElement = document.createElement('div');
+    const innerElement = document.createElement('div');
+
+    modalElement.classList.add('modal');
+    innerElement.classList.add('inner');
+    innerElement.innerHTML = content;
+
+    modalElement.appendChild(innerElement);
+    document.body.appendChild(modalElement);
+
+    return modalElement;
+}
+
 function closeModalWindow(modalElement) {
     document.body.removeChild(modalElement);
 }
@@ -95,7 +105,11 @@ function closeModalWindow(modalElement) {
 async function loadTodos() {
     try {
         const userId = localStorage.getItem("USER-ID");
-        const response = await fetch(`http://localhost:8080/todo/${userId}`);
+        const response = await fetch(`http://localhost:8080/todo/${userId}`, {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem("X-AUTH-TOKEN")
+            }
+        });
         if (!response.ok) {
             throw new Error('Failed to load todos');
         }
@@ -116,3 +130,108 @@ async function loadTodos() {
         console.error('Error loading todos:', error);
     }
 }
+
+async function openEditModal(id) {
+    const postIt = document.querySelector(`.post-it[data-id="${id}"]`);
+    const content = postIt.getAttribute("data-content");
+    const dueDate = postIt.getAttribute("data-dueDate");
+    const color = postIt.getAttribute("data-color");
+    const isChecked = postIt.getAttribute("data-isChecked") === 'true';
+    const positionX = postIt.getAttribute("data-positionX") || 0.0;
+    const positionY = postIt.getAttribute("data-positionY") || 0.0;
+    const userId = localStorage.getItem("USER-ID");  // ดึง userId จาก localStorage
+
+    if (!userId) {
+        console.error('USER-ID is missing in localStorage');
+        return;
+    }
+
+    const modalElement = createModal(`
+        <div class="modal-content">
+            <button type="button" class="modal-close btn btn-outline-secondary" id="modalClose">×</button>
+            <form id="editTodoForm">
+                <input type="hidden" id="id" name="id" value="${id}">
+                <div class="form-group">
+                    <label for="editDueDate">Due Date :</label>
+                    <input class="form-control" type="date" id="editDueDate" name="dueDate" value="${dueDate}" required>
+                </div>
+                <div class="form-group">
+                    <label for="editContent">Content :</label>
+                    <textarea class="form-control" rows="2" id="editContent" name="content" maxlength="255" required>${content}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editColor">Color :</label>
+                    <select class="form-control" id="editColor" name="color" required>
+                        <option value="RED" ${color === 'RED' ? 'selected' : ''}>Red</option>
+                        <option value="GREEN" ${color === 'GREEN' ? 'selected' : ''}>Green</option>
+                        <option value="BLUE" ${color === 'BLUE' ? 'selected' : ''}>Blue</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    `);
+
+    document.getElementById("modalClose").addEventListener("click", function(event) {
+        event.stopPropagation();
+        closeModalWindow(modalElement);
+    });
+
+    document.getElementById("editTodoForm").addEventListener("submit", async function(event) {
+        event.preventDefault();
+        const form = document.getElementById('editTodoForm');
+        const formData = new FormData(form);
+        const id = formData.get("id");
+
+        if (!id) {
+            console.error('Todo ID is missing');
+            return;
+        }
+
+        const content = formData.get("content");
+        const dueDate = formData.get("dueDate");
+        const color = formData.get("color");
+
+        if (!content || !dueDate || !color) {
+            console.error('Form data is incomplete');
+            return;
+        }
+
+        const requestBody = {
+            userId: userId,  // เพิ่ม userId
+            content: content,
+            dueDate: dueDate,
+            color: color,
+            isChecked: postIt ? postIt.getAttribute("data-isChecked") === 'true' : false,
+            positionX: parseFloat(postIt ? postIt.getAttribute("data-positionX") : 0.0),
+            positionY: parseFloat(postIt ? postIt.getAttribute("data-positionY") : 0.0)
+        };             
+
+        console.log('Request Body:', requestBody);
+
+        try {
+            const response = await fetch(`http://localhost:8080/todo/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem("X-AUTH-TOKEN")
+                },
+                body: JSON.stringify(requestBody)
+            });
+        
+            if (response.ok) {
+                fetchTodo();
+                loadTodos(); // Refresh the Todo list
+                closeModalWindow(modalElement);
+            } else {
+                const responseData = await response.json();
+                console.error('Failed to update todo:', responseData);
+            }
+        } catch (error) {
+            console.error('Error updating todo:', error);
+        }        
+    });
+}
+

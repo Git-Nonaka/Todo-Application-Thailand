@@ -24,11 +24,8 @@ public class TodoController {
 
     @GetMapping(value = "/{userId}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public List<TodoModel> getAll(@PathVariable Optional<Integer> userId) {
-        if (!userId.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User ID is required.");
-        }
-        return service.selectAll(userId.get());
+    public List<TodoModel> getAll(@PathVariable int userId) {
+        return service.selectAll(userId);
     }
 
     @PostMapping(produces = "application/json")
@@ -45,21 +42,23 @@ public class TodoController {
     @PutMapping(value = "/{id}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public void update(@PathVariable int id, @RequestBody TodoRequest request) {
+        System.out.println("Received TodoRequest: " + request);
         ValidateResult validate = request.validate();
         if (!validate.ok()) {
             throw new ResponseStatusException(
                 HttpStatus.BAD_REQUEST, validate.errorMessage());
         }
-        service.updateTodo(request.toModel(id));
-}
 
+        try {
+            service.updateTodo(request.toModel(id));
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error updating todo", e);
+        }
+    }
 
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Optional<Integer> id) {
-        if (!id.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Todo ID is required.");
-        }
-        service.deleteTodo(id.get());
+    public void delete(@PathVariable int id) {
+        service.deleteTodo(id);
     }
 }

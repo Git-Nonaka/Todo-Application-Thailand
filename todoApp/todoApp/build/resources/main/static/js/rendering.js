@@ -15,7 +15,7 @@ function renderTodo(todoJson) {
     todoJson.forEach(elem => {
         const postIt = document.createElement("div");
         postIt.classList.add("post-it");
-        postIt.setAttribute("data-id", elem.id); // ตรวจสอบการตั้งค่า ID
+        postIt.setAttribute("data-id", elem.id);
         postIt.setAttribute("data-userId", elem.userId);
         postIt.setAttribute("data-content", elem.content);
         postIt.setAttribute("data-dueDate", elem.dueDate);
@@ -29,6 +29,7 @@ function renderTodo(todoJson) {
         <div class="post-it-header">
             <input type="checkbox" id="checkBox${elem.id}" name="checkbox" ${checkedValue} onchange="updateCheckBox(event)">
             <label for="checkBox${elem.id}" class="post-it-checkbox"></label>
+            <button class="edit-btn" onclick="openEditModal(${elem.id})">Edit</button>
         </div>
         <div class="post-it-content">
             <p>${elem.content}</p>
@@ -46,6 +47,7 @@ function renderTodo(todoJson) {
     const postItList = document.querySelectorAll(".post-it");
     enableDrag(postItList);
 }
+
 
 async function updateCheckBox(event) {
     const postIt = event.target.closest('.post-it');
