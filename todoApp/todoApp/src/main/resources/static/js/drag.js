@@ -34,7 +34,7 @@ function enableDrag(objectList) {
 
             // Calculate distance between post-it and trash can
             const distance = getDistance(postItRect, expandedTrashCanRect);
-            const threshold = 100;
+            const threshold = 100; // You can change here
 
             if (distance < threshold) {
                 console.log("Post-it dropped near trash can area");

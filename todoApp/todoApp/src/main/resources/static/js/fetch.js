@@ -7,7 +7,7 @@ async function checkToken() {
     }
 
     const header = { 
-        'Authorization': "Bearer " + token  // ใช้ 'Authorization' แทน 'X-AUTH-TOKEN'
+        'Authorization': "Bearer " + token  // Use 'Authorization' instead 'X-AUTH-TOKEN'
     };
 
     try {

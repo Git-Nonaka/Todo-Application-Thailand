@@ -15,7 +15,6 @@ async function fetchTodo() {
     }
 }
 
-
 function renderTodo(todoJson) {
     const field = document.getElementById("mainField");
     field.innerHTML = "";
