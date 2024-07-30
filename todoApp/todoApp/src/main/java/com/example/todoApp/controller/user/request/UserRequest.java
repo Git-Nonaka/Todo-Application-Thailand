@@ -6,7 +6,7 @@ public class UserRequest {
     private String username;
     private String password;
 
-    /*****   getter   *****/
+    //for get username and get password
     public String getUsername() {
         return username;
     }
@@ -14,7 +14,7 @@ public class UserRequest {
         return password;
     }
 
-    /*****   setter   *****/
+    //for set username and set password
     public void setUsername(String username) {
         this.username = username;
     }
@@ -22,7 +22,7 @@ public class UserRequest {
         this.password = password;
     }
 
-
+    //model user
     public UserModel toModel() {
         return new UserModel(0, this.username, this.password);
     }

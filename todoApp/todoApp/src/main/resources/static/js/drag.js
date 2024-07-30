@@ -1,3 +1,4 @@
+//for drag and delete post it by drag to trash-can-img
 function enableDrag(objectList) {
     const trashCan = document.getElementById("trash-can-img");
 

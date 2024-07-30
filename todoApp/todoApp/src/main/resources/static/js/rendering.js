@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", fetchTodo())
 
+//connect and check todo databases.
 async function fetchTodo() {
     try {
         await checkToken();
@@ -15,6 +16,7 @@ async function fetchTodo() {
     }
 }
 
+//loading all todo data and post it
 function renderTodo(todoJson) {
     const field = document.getElementById("mainField");
     field.innerHTML = "";

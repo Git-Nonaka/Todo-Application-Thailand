@@ -1,3 +1,4 @@
+//update 30/07/2024 for improvement performance
 /*****     tokenが有効かチェック     *****/
 async function checkToken() {
     const token = localStorage.getItem("X-AUTH-TOKEN");

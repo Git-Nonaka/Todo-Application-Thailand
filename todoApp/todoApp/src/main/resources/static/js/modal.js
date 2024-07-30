@@ -1,4 +1,4 @@
-/// add form
+/// add form for insert data
 document.querySelector('#post-it-img').addEventListener('click', async function() {
     const modalElement = createModal(`
         <div class="modal-content">
