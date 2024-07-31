@@ -1,5 +1,7 @@
 package com.example.todoApp.model;
 
+// setting model user
+
 public class UserModel {
     private int userId;
     private String username;

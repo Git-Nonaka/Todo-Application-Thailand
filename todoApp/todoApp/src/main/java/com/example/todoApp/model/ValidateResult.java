@@ -1,5 +1,7 @@
 package com.example.todoApp.model;
 
+//setting validate result
+
 public class ValidateResult {
     private final boolean ok;
     private final String errorMessage;
