@@ -13,6 +13,8 @@ public class UserDatasource implements UserRepository {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    // find by username for login
+
     @Override
     public UserModel findByUsername(String username) {
         String sql = "SELECT * FROM user WHERE username = ?";
@@ -24,6 +26,8 @@ public class UserDatasource implements UserRepository {
         );
     }
 
+    // for register user in register page
+    
     @Override
     public void registerUser(UserModel user) {
         String sql = "INSERT INTO user (username, password) VALUES (?, ?)";
