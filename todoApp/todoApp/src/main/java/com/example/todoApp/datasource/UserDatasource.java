@@ -13,7 +13,7 @@ public class UserDatasource implements UserRepository {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    // find by username for login
+    // find by username for login page
 
     @Override
     public UserModel findByUsername(String username) {

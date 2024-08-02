@@ -52,6 +52,7 @@ public class TodoController {
         try {
             service.updateTodo(request.toModel(id));
         } catch (Exception e) {
+            // for when update todo failed.s
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error updating todo", e);
         }
     }
