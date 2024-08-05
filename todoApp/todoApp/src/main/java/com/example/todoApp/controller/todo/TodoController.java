@@ -21,13 +21,15 @@ public class TodoController {
     public TodoController(TodoService service) {
         this.service = service;
     }
-
+    
+    // for select all todo to show in main screen
     @GetMapping(value = "/{userId}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public List<TodoModel> getAll(@PathVariable int userId) {
         return service.selectAll(userId);
     }
 
+    // for insert todo
     @PostMapping(produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@RequestBody TodoRequest request) {

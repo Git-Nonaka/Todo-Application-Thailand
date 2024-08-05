@@ -19,6 +19,7 @@ public class TodoRequest {
     private double positionX;
     private double positionY;
 
+    // set todo request
     @JsonCreator
     public TodoRequest(
             @JsonProperty("userId") int userId,
