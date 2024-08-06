@@ -41,6 +41,7 @@ public class TodoController {
         service.insertTodo(request.toModel());
     }
 
+    // for update todo
     @PutMapping(value = "/{id}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public void update(@PathVariable int id, @RequestBody TodoRequest request) {
@@ -59,6 +60,7 @@ public class TodoController {
         }
     }
 
+    //for delete todo
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {

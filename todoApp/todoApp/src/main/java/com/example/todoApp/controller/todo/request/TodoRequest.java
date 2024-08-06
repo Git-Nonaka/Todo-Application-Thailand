@@ -67,6 +67,7 @@ public class TodoRequest {
         this.positionY = positionY;
     }
 
+    //for validate
     public ValidateResult validate() {
         if (content == null || content.isEmpty()) {
             System.out.println("Validation failed: Content can't be empty.");
