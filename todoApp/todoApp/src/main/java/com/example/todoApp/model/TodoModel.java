@@ -6,8 +6,8 @@ public class TodoModel {
     public final int id;
     public final int userId;
     public final String content;
-    public final LocalDate dueDate; // อาจเป็น null
-    public final String color; // อาจเป็น null
+    public final LocalDate dueDate; // may be null
+    public final String color; // may be null
     public final boolean isChecked;
     public final double positionX;
     public final double positionY;

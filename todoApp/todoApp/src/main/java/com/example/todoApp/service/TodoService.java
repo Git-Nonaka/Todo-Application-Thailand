@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+// for service
 @Service
 public class TodoService {
     public final TodoRepository repository;
