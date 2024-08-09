@@ -4,6 +4,7 @@ import com.example.todoApp.model.TodoModel;
 
 import java.util.List;
 
+//for todo repository
 public interface TodoRepository {
     List<TodoModel> selectAll(int userId);
     TodoModel selectById(int id);

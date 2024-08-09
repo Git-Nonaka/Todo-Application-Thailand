@@ -25,7 +25,7 @@ public class TodoDatasource implements TodoRepository {
                      "WHERE user_id = ?";
         List<Map<String, Object>> records = jdbcTemplate.queryForList(sql, userId);
         return records.stream()
-                .map(record -> toModel(record))
+                .map(record -> toModel(record)) //select all todo database
                 .collect(toList());
     }
 
