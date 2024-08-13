@@ -37,6 +37,7 @@ public class TodoDatasource implements TodoRepository {
         return toModel(record);
     }
 
+    //for insert todo
     @Override
     public void insertTodo(TodoModel todo) {
         String sql = "INSERT INTO todo(user_id, content, due_date, color) " +
@@ -50,6 +51,7 @@ public class TodoDatasource implements TodoRepository {
         );
     }
 
+    //for update todo
     @Override
     public void updateTodo(TodoModel todo) {
         String sql = "UPDATE todo " +
@@ -82,7 +84,7 @@ public class TodoDatasource implements TodoRepository {
                 (String) record.get("content"),
                 ((Date) record.get("due_date")).toLocalDate(),
                 (String) record.get("color"),
-                ((Integer) record.get("is_checked")) == 1,  // แปลงจาก int เป็น boolean
+                ((Integer) record.get("is_checked")) == 1,  // int to boolean
                 (Double) record.get("position_x"),
                 (Double) record.get("position_y")
         );
