@@ -1,3 +1,4 @@
+//for drag and delete post it by drag to trash-can-img
 function enableDrag(objectList) {
     const trashCan = document.getElementById("trash-can-img");
 
@@ -34,7 +35,7 @@ function enableDrag(objectList) {
 
             // Calculate distance between post-it and trash can
             const distance = getDistance(postItRect, expandedTrashCanRect);
-            const threshold = 100;
+            const threshold = 100; // You can change here
 
             if (distance < threshold) {
                 console.log("Post-it dropped near trash can area");
@@ -101,22 +102,27 @@ async function deletePostIt(id) {
 
 async function updatePosition(event, left, top) {
     const postIt = event.target.closest('.post-it');
+    if (!postIt) {
+        console.error("Element with class 'post-it' not found.");
+        return;
+    }
+
     const id = postIt.getAttribute("data-id");
     const userId = postIt.getAttribute("data-userId");
-    
-    if (!id || id === "null") {
-        console.error("Invalid ID:", id);
+
+    if (!id || id === "null" || !userId) {
+        console.error("Invalid ID or userId:", id, userId);
         return;
     }
 
     const requestBody = {
-        userId: parseInt(userId),
+        userId: parseInt(userId, 10),
         content: postIt.getAttribute("data-content"),
         dueDate: postIt.getAttribute("data-dueDate"),
         color: postIt.getAttribute("data-color"),
         isChecked: postIt.getAttribute("data-isChecked") === 'true',
-        positionX: parseInt(left),
-        positionY: parseInt(top)
+        positionX: parseFloat(left),  // แก้ไขจาก parseInt เป็น parseFloat
+        positionY: parseFloat(top)    // แก้ไขจาก parseInt เป็น parseFloat
     };
 
     try {

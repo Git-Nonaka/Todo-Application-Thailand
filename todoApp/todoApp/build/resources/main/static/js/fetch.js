@@ -1,3 +1,4 @@
+//update 30/07/2024 for improvement performance
 /*****     tokenが有効かチェック     *****/
 async function checkToken() {
     const token = localStorage.getItem("X-AUTH-TOKEN");
@@ -7,7 +8,7 @@ async function checkToken() {
     }
 
     const header = { 
-        'Authorization': "Bearer " + token  // ใช้ 'Authorization' แทน 'X-AUTH-TOKEN'
+        'Authorization': "Bearer " + token  // Use 'Authorization' instead 'X-AUTH-TOKEN'
     };
 
     try {
@@ -92,6 +93,12 @@ async function postData(data, url) {
 
 /*****     データ更新用メソッド     *****/
 async function putData(data, url) {
+    const tokenValid = await checkToken();
+    if (!tokenValid) {
+        console.error("Invalid token");
+        return { ok: false, responseData: "Invalid token" };
+    }
+
     try {
         const response = await fetch(url, {
             method: 'PUT',
@@ -101,17 +108,20 @@ async function putData(data, url) {
             },
             body: JSON.stringify(data)
         });
+
         if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+            const responseText = await response.text();
+            console.error('Failed to PUT data:', response.status, responseText);
+            return { ok: false, responseData: responseText };
         }
-        return response;
+
+        const responseData = await response.text();
+        return { ok: true, responseData: responseData ? JSON.parse(responseData) : {} };
     } catch (error) {
         console.error('Error in putData:', error);
-        throw error;
+        return { ok: false, responseData: error };
     }
 }
-
 
 /*****     データ削除用メソッド     *****/
 async function deleteData(url) {

@@ -84,7 +84,7 @@ public class TodoDatasource implements TodoRepository {
                 (String) record.get("content"),
                 ((Date) record.get("due_date")).toLocalDate(),
                 (String) record.get("color"),
-                ((Integer) record.get("is_checked")) == 1,  // int to boolean
+                (boolean) record.get("is_checked"),
                 (Double) record.get("position_x"),
                 (Double) record.get("position_y")
         );
