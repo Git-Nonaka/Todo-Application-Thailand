@@ -62,7 +62,7 @@ document.querySelector('#post-it-img').addEventListener('click', async function(
                 return;
             }
 
-            const response = await fetch("http://localhost:8080/todo", {
+            const response = await fetch("http://192.168.56.102:8080/todo", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -106,7 +106,7 @@ function closeModalWindow(modalElement) {
 async function loadTodos() {
     try {
         const userId = localStorage.getItem("USER-ID");
-        const response = await fetch(`http://localhost:8080/todo/${userId}`, {
+        const response = await fetch(`http://192.168.56.102:8080/todo/${userId}`, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem("X-AUTH-TOKEN")
             }
@@ -213,7 +213,7 @@ async function openEditModal(id) {
         console.log('Request Body:', requestBody);
 
         try {
-            const response = await fetch(`http://localhost:8080/todo/${id}`, {
+            const response = await fetch(`http://192.168.56.102:8080/todo/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

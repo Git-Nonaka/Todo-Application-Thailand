@@ -5,7 +5,7 @@ async function fetchTodo() {
     try {
         await checkToken();
         const userId = localStorage.getItem("USER-ID");
-        const todo = await getData(`http://localhost:8080/todo/${userId}`);
+        const todo = await getData(`http://192.168.56.102:8080/todo/${userId}`);
         if (!todo.ok) {
             throw new Error('Failed to fetch todos');
         }
@@ -81,7 +81,7 @@ async function updateCheckBox(event) {
     console.log("Updating checkbox with requestBody:", requestBody);
 
     try {
-        const response = await putData(requestBody, `http://localhost:8080/todo/${id}`);
+        const response = await putData(requestBody, `http://192.168.56.102:8080/todo/${id}`);
         
         if (response) {
             console.log("Response from server:", response);

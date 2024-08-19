@@ -43,7 +43,7 @@ public class JsonAuthenticationFilter extends UsernamePasswordAuthenticationFilt
 //            String hogrhorgr = ex.getName();
 
             String token = JWT.create()
-                    .withIssuer("localhost") //発行者
+                    .withIssuer("192.168.56.102") //発行者
                     .withClaim("username", ex.getName()) //keyに対してvalueの設定。汎用的な様々な値を保持できる
                     .sign(Algorithm.HMAC256("secret")); // 利用アルゴリズムを指定してJWTを新規作成
             res.addHeader("X-AUTH-TOKEN", token); // jwtはX-AUTH-TOKENにセットする

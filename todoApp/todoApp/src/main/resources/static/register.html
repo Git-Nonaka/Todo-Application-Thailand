@@ -36,7 +36,7 @@
                 };
                 e.preventDefault()
 
-                const response = await postData(data, "http://localhost:8080/user/register")
+                const response = await postData(data, "http://192.168.56.102:8080/user/register")
                 if (!response) {
                     console.log("error")
                 }

@@ -12,7 +12,7 @@ async function checkToken() {
     };
 
     try {
-        const response = await fetch(`http://localhost:8080/check`, {
+        const response = await fetch(`http://192.168.56.102:8080/check`, {
             method: "GET",
             headers: header
         });

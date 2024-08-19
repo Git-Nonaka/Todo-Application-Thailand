@@ -87,7 +87,7 @@ function getDistance(rect1, rect2) {
 
 async function deletePostIt(id) {
     try {
-        const response = await deleteData(`http://localhost:8080/todo/${id}`);
+        const response = await deleteData(`http://192.168.56.102:8080/todo/${id}`);
         if (response) {
             console.log("Delete successful:", response);
             fetchTodo();
@@ -126,7 +126,7 @@ async function updatePosition(event, left, top) {
     };
 
     try {
-        const response = await putData(requestBody, `http://localhost:8080/todo/${id}`);
+        const response = await putData(requestBody, `http://192.168.56.102:8080/todo/${id}`);
         if (response) {
             console.log("Update successful:", response);
         } else {
